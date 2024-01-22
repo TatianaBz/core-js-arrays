@@ -282,8 +282,10 @@ function distinct(arr) {
  *    createNDimensionalArray(4, 2) => [[[[0, 0], [0, 0]], [[0, 0], [0, 0]]], [[[0, 0], [0, 0]], [[0, 0], [0, 0]]]]
  *    createNDimensionalArray(1, 1) => [0]
  */
-function createNDimensionalArray(/* n, size */) {
-  throw new Error('Not implemented');
+function createNDimensionalArray(n, size) {
+  return n === 1
+    ? Array(size).fill(0)
+    : Array(size).fill(createNDimensionalArray(n - 1, size));
 }
 
 /**
@@ -333,8 +335,8 @@ function selectMany(arr, childrenSelector) {
  *   calculateBalance([ [ 10, 8 ], [ 1, 5 ] ])  => (10 - 8) + (1 - 5) = 2 + -4 = -2
  *   calculateBalance([]) => 0
  */
-function calculateBalance(/* arr */) {
-  throw new Error('Not implemented');
+function calculateBalance(arr) {
+  return arr.reduce((calc, elem) => calc + (elem[0] - elem[1]), 0);
 }
 
 /**
@@ -349,8 +351,12 @@ function calculateBalance(/* arr */) {
  *    createChunks(['a', 'b', 'c', 'd', 'e'], 2) => [['a', 'b'], ['c', 'd'], ['e']]
  *    createChunks([10, 20, 30, 40, 50], 1) => [[10], [20], [30], [40], [50]]
  */
-function createChunks(/* arr, chunkSize */) {
-  throw new Error('Not implemented');
+function createChunks(arr, chunkSize) {
+  const newarr = arr.reduce((prev) => {
+    if (arr.length > chunkSize) return prev.concat([arr.splice(0, chunkSize)]);
+    return prev.concat([arr]);
+  }, []);
+  return newarr;
 }
 
 /**
@@ -442,8 +448,12 @@ function getIdentityMatrix(n) {
  *    getIndicesOfOddNumbers([2, 4, 6, 8, 10]) => []
  *    getIndicesOfOddNumbers([11, 22, 33, 44, 55]) => [0, 2, 4]
  */
-function getIndicesOfOddNumbers(/* numbers */) {
-  throw new Error('Not implemented');
+function getIndicesOfOddNumbers(numbers) {
+  const newarr = numbers.reduce((prev, el, item) => {
+    if (el % 2 !== 0) return prev.concat(item);
+    return prev;
+  }, []);
+  return newarr;
 }
 
 /**
@@ -540,8 +550,9 @@ function propagateItemsByPositionIndex(/* arr */) {
  *    shiftArray(['a', 'b', 'c', 'd'], -1) => ['b', 'c', 'd', 'a']
  *    shiftArray([10, 20, 30, 40, 50], -3) => [40, 50, 10, 20, 30]
  */
-function shiftArray(/* arr, n */) {
-  throw new Error('Not implemented');
+function shiftArray(arr, n) {
+  if (n > 0) return arr.slice(n + 1, -1) + arr.slice(0, n + 1);
+  return arr.slice(n) + arr.slice(0, n);
 }
 
 /**
