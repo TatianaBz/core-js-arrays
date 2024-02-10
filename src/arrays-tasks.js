@@ -299,8 +299,11 @@ function createNDimensionalArray(n, size) {
  *    flattenArray(['a', ['b', ['c', 'd'], 'e'], 'f']) => ['a', 'b', 'c', 'd', 'e', 'f']
  *    flattenArray([1, 2, 3, 4]) => [1, 2, 3, 4]
  */
-function flattenArray(/* nestedArray */) {
-  throw new Error('Not implemented');
+function flattenArray(nestedArray) {
+  nestedArray.forEach((elem) => {
+    if (typeof elem === 'object') flattenArray(elem);
+    return elem;
+  });
 }
 
 /**
@@ -353,8 +356,7 @@ function calculateBalance(arr) {
  */
 function createChunks(arr, chunkSize) {
   const newarr = arr.reduce((prev) => {
-    if (arr.length > chunkSize) return prev.concat([arr.splice(0, chunkSize)]);
-    return prev.concat([arr]);
+    return prev.concat([arr.splice(0, Math.min(chunkSize, arr.length))]);
   }, []);
   return newarr;
 }
@@ -391,10 +393,12 @@ function generateOdds(len) {
  *   getElementByIndices(['one','two','three'], [2]) => 'three'  (arr[2])
  *   getElementByIndices([[[ 1, 2, 3]]], [ 0, 0, 1 ]) => 2        (arr[0][0][1])
  */
-function getElementByIndices(/* arr, indices */) {
-  throw new Error('Not implemented');
+function getElementByIndices(arr, indices) {
+  const res = arr[indices[0]];
+  if (typeof res !== 'number')
+    getElementByIndices(arr[indices[0]], indices.shift());
+  return res;
 }
-
 /**
  * Returns the number of all falsy values in the specified array.
  *
@@ -466,8 +470,12 @@ function getIndicesOfOddNumbers(numbers) {
  *    getHexRGBValues([ 0, 255, 16777215]) => [ '#000000', '#0000FF', '#FFFFFF' ]
  *    getHexRGBValues([]) => []
  */
-function getHexRGBValues(/* arr */) {
-  throw new Error('Not implemented');
+function getHexRGBValues(arr) {
+  let res = [];
+  res = arr.map((e) => {
+    return `'#' + ${e.toString(16).toUpperCase().padStart(6, '0')}`;
+  });
+  return res;
 }
 
 /**
@@ -484,8 +492,14 @@ function getHexRGBValues(/* arr */) {
  *   getMaxItems([ 10, 2, 7, 5, 3, -5 ], 3) => [ 10, 7, 5 ]
  *   getMaxItems([ 10, 10, 10, 10 ], 3) => [ 10, 10, 10 ]
  */
-function getMaxItems(/* arr, n */) {
-  throw new Error('Not implemented');
+function getMaxItems(arr, n) {
+  if (arr.leng !== 0) {
+    arr.sort((a, b) => {
+      return a > b ? -1 : 1;
+    });
+    return arr.slice(0, n);
+  }
+  return arr;
 }
 
 /**
@@ -500,10 +514,13 @@ function getMaxItems(/* arr, n */) {
  *    findCommonElements(['a', 'b', 'c'], ['b', 'c', 'd']) => [ 'b', 'c' ]
  *    findCommonElements([1, 2, 3], ['a', 'b', 'c']) => []
  */
-function findCommonElements(/* arr1, arr2 */) {
-  throw new Error('Not implemented');
+function findCommonElements(arr1, arr2) {
+  const arr = [];
+  arr1.forEach((elem) => {
+    if (arr2.find((e) => e === elem)) arr.push(elem);
+  });
+  return arr;
 }
-
 /**
  * Finds the length of the longest increasing subsequence of a given array of integers.
  *
@@ -515,10 +532,20 @@ function findCommonElements(/* arr1, arr2 */) {
  *    findLongestIncreasingSubsequence([3, 10, 2, 1, 20]) => 2
  *    findLongestIncreasingSubsequence([50, 3, 10, 7, 40, 80]) => 3
  */
-function findLongestIncreasingSubsequence(/* nums */) {
-  throw new Error('Not implemented');
+function findLongestIncreasingSubsequence(nums) {
+  const ind = [];
+    if (e > curr) {
+      s += 1;
+      curr = e;
+    } else {
+      ind.push(s);
+      s = 1;
+      curr = e;
+    }
+  });
+  ind.push(s);
+  return Math.max.apply(null, ind);
 }
-
 /**
  * Propagates every item in sequence its position times
  * Returns an array that consists of: one first item, two second items, three third items etc.
@@ -533,8 +560,12 @@ function findLongestIncreasingSubsequence(/* nums */) {
  *  propagateItemsByPositionIndex([ 'a', 'b', 'c', null ]) => [ 'a', 'b', 'b', 'c', 'c', 'c',  null, null, null, null ]
  *  propagateItemsByPositionIndex([ 1,2,3,4,5 ]) => [ 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5 ]
  */
-function propagateItemsByPositionIndex(/* arr */) {
-  throw new Error('Not implemented');
+function propagateItemsByPositionIndex(arr) {
+  const arrNew = [];
+  arr.map((e, i) => {
+    return arrNew.concat(Array(i + 1).fill(e));
+  });
+  return arrNew;
 }
 
 /**
@@ -552,7 +583,7 @@ function propagateItemsByPositionIndex(/* arr */) {
  */
 function shiftArray(arr, n) {
   if (n > 0) return arr.slice(n + 1, -1) + arr.slice(0, n + 1);
-  return arr.slice(n) + arr.slice(0, n);
+  return arr.slice(-n) + arr.slice(0, -n);
 }
 
 /**
