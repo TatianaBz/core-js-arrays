@@ -21,12 +21,9 @@
  *    getIntervalArray(3, 3) => [ 3 ]
  */
 function getIntervalArray(start, end) {
-  const arr = Array(end - start + 1).fill(0);
-  let s = start - 1;
-  return arr.map((e) => {
-    s += 1;
-    return e + s;
-  });
+  return Array(end - start + 1)
+    .fill(0)
+    .forEach((e, i) => i + e + start);
 }
 
 /**
@@ -260,13 +257,7 @@ function toStringList(arr) {
  *   distinct([]) => []
  */
 function distinct(arr) {
-  const res = arr.reduce((sum, e) => {
-    if (sum.includes(e) === false) {
-      sum.push(e);
-    }
-    return sum;
-  }, []);
-  return res;
+  return [...new Set(arr)];
 }
 
 /**
@@ -473,7 +464,7 @@ function getIndicesOfOddNumbers(numbers) {
 function getHexRGBValues(arr) {
   let res = [];
   res = arr.map((e) => {
-    return `'#' + ${e.toString(16).toUpperCase().padStart(6, '0')}`;
+    return `#${e.toString(16).toUpperCase().padStart(6, '0')}`;
   });
   return res;
 }
@@ -493,7 +484,7 @@ function getHexRGBValues(arr) {
  *   getMaxItems([ 10, 10, 10, 10 ], 3) => [ 10, 10, 10 ]
  */
 function getMaxItems(arr, n) {
-  if (arr.leng !== 0) {
+  if (arr.leng > 1) {
     arr.sort((a, b) => {
       return a > b ? -1 : 1;
     });
@@ -534,6 +525,9 @@ function findCommonElements(arr1, arr2) {
  */
 function findLongestIncreasingSubsequence(nums) {
   const ind = [];
+  let curr = 0;
+  let s = 1;
+  nums.forEach((e) => {
     if (e > curr) {
       s += 1;
       curr = e;
