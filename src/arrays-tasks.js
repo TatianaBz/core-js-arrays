@@ -211,7 +211,7 @@ function getHead(arr, n) {
  *    getTail([ 'a', 'b', 'c', 'd'], 0) => []
  */
 function getTail(arr, n) {
-  return arr.splice(0, -n);
+  return n === 0 ? [] : arr.slice(-n);
 }
 
 /**
@@ -383,10 +383,7 @@ function generateOdds(len) {
  *   getElementByIndices([[[ 1, 2, 3]]], [ 0, 0, 1 ]) => 2        (arr[0][0][1])
  */
 function getElementByIndices(arr, indices) {
-  const res = arr[indices[0]];
-  if (typeof res !== 'number')
-    getElementByIndices(arr[indices[0]], indices.shift());
-  return res;
+  return indices.reduce((acc, cur) => acc[cur], arr);
 }
 /**
  * Returns the number of all falsy values in the specified array.
@@ -596,13 +593,19 @@ function shiftArray(arr, n) {
  *   sortDigitNamesByNumericOrder([ 'one','one','one','zero' ]) => [ 'zero','one','one','one' ]
  */
 function sortDigitNamesByNumericOrder(arr) {
-  if (Array.isArray(arr) && arr.length !== null) {
-    arr.sort((a, b) => {
-      if (a > b) return 1;
-      return -1;
-    });
-  }
-  return arr;
+  const number = {
+    zero: 0,
+    one: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    five: 5,
+    six: 6,
+    seven: 7,
+    eight: 8,
+    nine: 9,
+  };
+  return arr.sort((a, b) => number[a] - number[b]);
 }
 /**
  * Swaps the head and tail of the specified array:
