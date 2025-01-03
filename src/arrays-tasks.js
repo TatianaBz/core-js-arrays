@@ -21,9 +21,7 @@
  *    getIntervalArray(3, 3) => [ 3 ]
  */
 function getIntervalArray(start, end) {
-  return Array(end - start + 1)
-    .fill(0)
-    .map((e, i) => i + e + start);
+  return Array.from({ length: end - start + 1 }, (v, i) => start + i);
 }
 
 /**
@@ -292,9 +290,7 @@ function createNDimensionalArray(n, size) {
  *    flattenArray([1, 2, 3, 4]) => [1, 2, 3, 4]
  */
 function flattenArray(nestedArray) {
-  nestedArray.forEach((elem) => {
-    if (Array.isArray(elem)) flattenArray(elem);
-  });
+  return nestedArray.flat(Infinity);
 }
 
 /**
@@ -311,7 +307,7 @@ function flattenArray(nestedArray) {
  *   selectMany(['one','two','three'], (x) => x.split('')) =>   ['o','n','e','t','w','o','t','h','r','e','e']
  */
 function selectMany(arr, childrenSelector) {
-  return arr.map((e) => childrenSelector(e)).flat();
+  return arr.flatMap(childrenSelector);
 }
 
 /**
@@ -344,10 +340,10 @@ function calculateBalance(arr) {
  *    createChunks([10, 20, 30, 40, 50], 1) => [[10], [20], [30], [40], [50]]
  */
 function createChunks(arr, chunkSize) {
-  const newarr = arr.reduce((prev) => {
-    return prev.concat([arr.splice(0, Math.min(chunkSize, arr.length))]);
-  }, []);
-  return newarr;
+  const t = [];
+  t.concat([arr.splice(chunkSize)]);
+  if (arr.length > chunkSize) createChunks(arr, chunkSize);
+  return t;
 }
 
 /**
@@ -502,9 +498,9 @@ function getMaxItems(arr, n) {
  *    findCommonElements([1, 2, 3], ['a', 'b', 'c']) => []
  */
 function findCommonElements(arr1, arr2) {
-  const arr = [];
-  arr1.forEach((elem) => {
-    if (arr2.find((e) => e === elem)) arr.push(elem);
+  let arr = [];
+  arr = arr1.map((elem) => {
+    return arr2.find(elem);
   });
   return arr;
 }
@@ -520,20 +516,18 @@ function findCommonElements(arr1, arr2) {
  *    findLongestIncreasingSubsequence([50, 3, 10, 7, 40, 80]) => 3
  */
 function findLongestIncreasingSubsequence(nums) {
-  const ind = [];
   let curr = 0;
   let s = 0;
-  nums.forEach((e) => {
+  const ind = nums.map((e) => {
     if (e > curr) {
       s += 1;
       curr = e;
     } else {
-      ind.push(s);
       s = 1;
       curr = e;
     }
+    return s;
   });
-  ind.push(s);
   return Math.max.apply(null, ind);
 }
 /**
@@ -551,11 +545,8 @@ function findLongestIncreasingSubsequence(nums) {
  *  propagateItemsByPositionIndex([ 1,2,3,4,5 ]) => [ 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5 ]
  */
 function propagateItemsByPositionIndex(arr) {
-  if (arr.length <= 1) {
-    const arrNew = [];
-    arr.map((e, i) => {
-      return arrNew.concat(Array(i + 1).fill(e));
-    });
+  if (arr.length <= 1 && arr === undefined) {
+    const arrNew = arr.map((e, i) => [].concat(Array(i + 1).fill(e)));
     return arrNew;
   }
   return arr;
